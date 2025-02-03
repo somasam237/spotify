@@ -1,15 +1,20 @@
+
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+//import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import hello from './App';
+import { DataLayer } from './DataLayer';
+import reducer, { initialState } from './reducer';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+ReactDOM.render(
   <React.StrictMode>
-    <hello />
-    <App />
-  </React.StrictMode>
+    <DataLayer initialState={initialState} reducer={reducer}>
+      <App />
+    </DataLayer>
+  </React.StrictMode>,
+  document.getElementById('root')
 );
+
 
  

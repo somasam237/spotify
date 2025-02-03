@@ -2,8 +2,8 @@
 import React from "react";
 import "./Body.css";
 import Header from "./Header";
-import { useDataLayerValue } from "./DataLayer";
-import { PlayCircleFilled, Favorite, MoreHoriz } from "@material-ui/icons";
+import { useDataLayerValue } from "./DataLayer.js";
+import { PlayCircleFilled, Favorite, MoreHoriz } from "@mui/icons-material";
 import SongRow from "./SongRow";
 
 function Body({ spotify }) {
