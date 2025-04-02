@@ -27,6 +27,7 @@ export default function Login() {
         alt="spotify"
       />
       <button onClick={handleClick}>Connect Spotify</button>
+      <h1> By <strong>Samyra </strong></h1>
     </Container>
   );
 }
