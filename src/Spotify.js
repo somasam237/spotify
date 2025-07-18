@@ -1,8 +1,7 @@
-
 // spotify.js
 
 export const authEndpoint = "https://accounts.spotify.com/authorize";
-const redirectUrl = "https://localhost:3000/"; // i need to make sure that this matches your Spotify Application's redirect URI in the spotify for web developper website.
+const redirectUrl = "http://localhost:3000/"; // i need to make sure that this matches your Spotify Application's redirect URI in the spotify for web developper website.
 const clientId = "cdc84f4346cc45c6bcc30260c36460c7";//this as well, this is unique for every konto
 
 const scopes = [
@@ -18,8 +17,8 @@ export const getTokenFromUrl = () => {
       .substring(1)
       .split("&")
       .reduce((initial, item) => {
-        let parts = item.split("=");// i just need a part
-        //initial[parts[0]] = decodeURLComponent(parts[1]);
+        let parts = item.split("=");
+        initial[parts[0]] = decodeURIComponent(parts[1]);
         return initial;
       }, {});
   };

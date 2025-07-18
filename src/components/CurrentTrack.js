@@ -7,28 +7,40 @@ export default function CurrentTrack() {
   const [{ token, currentPlaying }, dispatch] = useStateProvider();
   useEffect(() => {
     const getCurrentTrack = async () => {
-      const response = await axios.get(
-        "https://api.spotify.com/v1/me/player/currently-playing",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + token,
-          },
+      try {
+        const response = await axios.get(
+          "https://api.spotify.com/v1/me/player/currently-playing",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
+        if (response.data && response.data.item) {
+          const currentPlaying = {
+            id: response.data.item.id,
+            name: response.data.item.name,
+            artists: response.data.item.artists.map((artist) => artist.name),
+            image:
+              response.data.item.album.images[2]?.url ||
+              response.data.item.album.images[0]?.url,
+          };
+          dispatch({ type: reducerCases.SET_PLAYING, currentPlaying });
+        } else {
+          dispatch({ type: reducerCases.SET_PLAYING, currentPlaying: null });
         }
-      );
-      if (response.data !== "") {
-        const currentPlaying = {
-          id: response.data.item.id,
-          name: response.data.item.name,
-          artists: response.data.item.artists.map((artist) => artist.name),
-          image: response.data.item.album.images[2].url,
-        };
-        dispatch({ type: reducerCases.SET_PLAYING, currentPlaying });
-      } else {
+      } catch (error) {
+        console.log(
+          "No track currently playing or error fetching current track:",
+          error.response?.status
+        );
         dispatch({ type: reducerCases.SET_PLAYING, currentPlaying: null });
       }
     };
-    getCurrentTrack();
+    if (token) {
+      getCurrentTrack();
+    }
   }, [token, dispatch]);
   return (
     <Container>

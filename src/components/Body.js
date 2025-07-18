@@ -11,34 +11,38 @@ export default function Body({ headerBackground }) {
 
   useEffect(() => {
     const getInitialPlaylist = async () => {
-      const response = await axios.get(
-        `https://api.spotify.com/v1/playlists/${selectedPlaylistId}`,
-        {
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const selectedPlaylist = {
-        id: response.data.id,
-        name: response.data.name,
-        description: response.data.description.startsWith("<a")
-          ? ""
-          : response.data.description,
-        image: response.data.images[0].url,
-        tracks: response.data.tracks.items.map(({ track }) => ({
-          id: track.id,
-          name: track.name,
-          artists: track.artists.map((artist) => artist.name),
-          image: track.album.images[2].url,
-          duration: track.duration_ms,
-          album: track.album.name,
-          context_uri: track.album.uri,
-          track_number: track.track_number,
-        })),
-      };
-      dispatch({ type: reducerCases.SET_PLAYLIST, selectedPlaylist });
+      try {
+        const response = await axios.get(
+          `https://api.spotify.com/v1/playlists/${selectedPlaylistId}`,
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const selectedPlaylist = {
+          id: response.data.id,
+          name: response.data.name,
+          description: response.data.description.startsWith("<a")
+            ? ""
+            : response.data.description,
+          image: response.data.images[0].url,
+          tracks: response.data.tracks.items.map(({ track }) => ({
+            id: track.id,
+            name: track.name,
+            artists: track.artists.map((artist) => artist.name),
+            image: track.album.images[2].url,
+            duration: track.duration_ms,
+            album: track.album.name,
+            context_uri: track.album.uri,
+            track_number: track.track_number,
+          })),
+        };
+        dispatch({ type: reducerCases.SET_PLAYLIST, selectedPlaylist });
+      } catch (error) {
+        console.error("Error fetching playlist:", error);
+      }
     };
     getInitialPlaylist();
   }, [token, dispatch, selectedPlaylistId]);
@@ -50,33 +54,34 @@ export default function Body({ headerBackground }) {
     context_uri,
     track_number
   ) => {
-    const response = await axios.put(
-      `https://api.spotify.com/v1/me/player/play`,
-      {
-        context_uri,
-        offset: {
-          position: track_number - 1,
+    try {
+      const response = await axios.put(
+        `https://api.spotify.com/v1/me/player/play`,
+        {
+          context_uri,
+          offset: {
+            position: track_number - 1,
+          },
+          position_ms: 0,
         },
-        position_ms: 0,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+
+      dispatch({ type: reducerCases.SET_PLAYING, currentPlaying: { id, name, artists, image } });
+    } catch (error) {
+      if (error.response?.status === 404) {
+        alert("No active Spotify device found. Please open Spotify on a device (desktop app, mobile, or web player) and try again.");
+      } else if (error.response?.status === 403) {
+        alert("Spotify Premium is required to control playback.");
+      } else {
+        console.error("Error playing track:", error);
+        alert("Failed to play track. Please try again.");
       }
-    );
-    if (response.status === 204) {
-      const currentPlaying = {
-        id,
-        name,
-        artists,
-        image,
-      };
-      dispatch({ type: reducerCases.SET_PLAYING, currentPlaying });
-      dispatch({ type: reducerCases.SET_PLAYER_STATE, playerState: true });
-    } else {
-      dispatch({ type: reducerCases.SET_PLAYER_STATE, playerState: true });
     }
   };
   const msToMinutesAndSeconds = (ms) => {
@@ -177,6 +182,6 @@ export default function Body({ headerBackground }) {
 
 const Container = styled.div`
  .list{
- background-color: {({ headerBackground }) =>
-        headerBackground ? "#000000dc" : "none"};}
+ background-color: ${({ $headerBackground }) =>
+        $headerBackground ? "#000000dc" : "none"};}
 `;

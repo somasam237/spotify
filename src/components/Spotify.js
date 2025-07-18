@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import Sidebar from "./Sidebar";
 import styled from "styled-components";
@@ -41,27 +40,89 @@ export default function Spotify() {
   }, [dispatch, token]);
   useEffect(() => {
     const getPlaybackState = async () => {
-      const { data } = await axios.get("https://api.spotify.com/v1/me/player", {
+      try {
+        const { data } = await axios.get("https://api.spotify.com/v1/me/player", {
+          headers: {
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          },
+        });
+        if (data) {
+          dispatch({
+            type: reducerCases.SET_PLAYER_STATE,
+            playerState: data.is_playing,
+          });
+        }
+      } catch (error) {
+        if (error.response?.status === 404) {
+          console.log("No active device found");
+          // Set player state to false when no device is active
+          dispatch({
+            type: reducerCases.SET_PLAYER_STATE,
+            playerState: false,
+          });
+        } else if (error.response?.status === 403) {
+          console.log("Spotify Premium required for playback control");
+          dispatch({
+            type: reducerCases.SET_PLAYER_STATE,
+            playerState: false,
+          });
+        } else {
+          console.error("Error getting playback state:", error);
+        }
+      }
+    };
+    getPlaybackState();
+  }, [dispatch, token]);
+  useEffect(() => {
+    // Load Spotify Web Playback SDK
+    const script = document.createElement("script");
+    script.src = "https://sdk.scdn.co/spotify-player.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      const player = new window.Spotify.Player({
+        name: 'My React Spotify App',
+        getOAuthToken: cb => { cb(token); },
+        volume: 0.5
+      });
+
+      // Ready
+      player.addListener('ready', ({ device_id }) => {
+        console.log('Ready with Device ID', device_id);
+        // Set this device as active
+        setActiveDevice(device_id);
+      });
+
+      // Connect to the player!
+      player.connect();
+    };
+  }, [token]);
+
+  const setActiveDevice = async (device_id) => {
+    try {
+      await axios.put("https://api.spotify.com/v1/me/player", {
+        device_ids: [device_id],
+        play: false
+      }, {
         headers: {
           Authorization: "Bearer " + token,
           "Content-Type": "application/json",
         },
       });
-      dispatch({
-        type: reducerCases.SET_PLAYER_STATE,
-        playerState: data.is_playing,
-      });
-    };
-    getPlaybackState();
-  }, [dispatch, token]);
+    } catch (error) {
+      console.error("Error setting active device:", error);
+    }
+  };
   return (
     <Container>
       <div className="spotify__body">
         <Sidebar />
         <div className="body" ref={bodyRef} onScroll={bodyScrolled}>
-          <Navbar navBackground={navBackground} />
+          <Navbar $navBackground={navBackground} />
           <div className="body__contents">
-            <Body headerBackground={headerBackground} />
+            <Body $headerBackground={headerBackground} />
           </div>
         </div>
       </div>
