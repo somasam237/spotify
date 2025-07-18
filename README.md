@@ -1,3 +1,15 @@
+
+My Spotify Clone
+
+
+
+<img width="1859" height="1009" alt="Capture d'écran 2025-07-18 122609" src="https://github.com/user-attachments/assets/25870ea8-6eeb-463c-8fae-d65d258a430f" />
+<img width="1920" height="1128" alt="Capture d'écran 2025-07-18 122400" src="https://github.com/user-attachments/assets/ae8222f2-49a5-459a-af1b-cbc08db63c13" />
+<img width="1859" height="1004" alt="Capture d'écran 2025-07-18 122646" src="https://github.com/user-attachments/assets/f9845d8e-9ed4-4a9f-8343-79d609681242" />
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -45,26 +57,7 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
